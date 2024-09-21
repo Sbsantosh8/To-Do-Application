@@ -23,7 +23,7 @@ Make sure you have the following installed on your machine:<br/>
 ```bash
 git clone https://github.com/Sbsantosh8/To-Do-Application.git.
 cd To-Do-Application
-cd To_do_app
+
 ```
 
 # 2. Create and Activate Virtual Environment
@@ -39,6 +39,8 @@ pip install -r requirements.txt
 ```
 # 4. Apply Migrations
 ```
+cd To_do_app
+python manage.py makemigrations
 python manage.py migrate
 ```
 # 5. Create a Superuser (Optional)
