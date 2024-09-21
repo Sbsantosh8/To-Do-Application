@@ -119,17 +119,23 @@ function toggleTodoCompletion(id, isCompleted, li) {
 }
 
 
+// Edit function
+
 function editTodo(id, li) {
-    // Create text input fields for title and description
+    // Get the current title and description
+    const currentText = li.childNodes[1].textContent; // Get the text node
+    const [currentTitle, currentDescription] = currentText.split(' - '); // Split the title and description
+
+    // Create input fields for title and description
     const titleInput = document.createElement('input');
     titleInput.type = 'text';
-    titleInput.value = li.firstChild.textContent;
+    titleInput.value = currentTitle.trim(); // Set the value to the title
 
     const descriptionInput = document.createElement('textarea');
-    descriptionInput.value = li.firstChild.nextSibling.textContent;
+    descriptionInput.value = currentDescription ? currentDescription.trim() : ''; // Set the value to the description
 
-    // Replace the existing text with the input fields
-    li.innerHTML = '';  // Clear existing content
+    // Clear existing content and append inputs
+    li.innerHTML = ''; // Clear current content
     li.appendChild(titleInput);
     li.appendChild(descriptionInput);
 
@@ -157,50 +163,62 @@ function editTodo(id, li) {
             },
             body: JSON.stringify({ title, description }),
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 // Update the list item with the new title and description
                 li.innerHTML = `${data.title} - ${data.description}`;
-
-                // Optionally, add back the edit and delete buttons
-                const editButton = document.createElement('button');
-                editButton.textContent = 'Edit';
-                editButton.addEventListener('click', function () {
-                    editTodo(data.id, li);
-                });
-                li.appendChild(editButton);
-
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Delete';
-                deleteButton.addEventListener('click', function () {
-                    deleteTodo(data.id, li);
-                });
-                li.appendChild(deleteButton);
+                // Re-add the checkbox
+                addCheckbox(data, li);
+                // Add back the edit and delete buttons
+                addEditAndDeleteButtons(data.id, li);
             })
             .catch(error => console.error('Error:', error));
     });
 
     // Handle cancel action
     cancelButton.addEventListener('click', function () {
-        li.innerHTML = `${titleInput.value} - ${descriptionInput.value}`;
-
-        // Re-add the edit and delete buttons
-        const editButton = document.createElement('button');
-        editButton.textContent = 'Edit';
-        editButton.addEventListener('click', function () {
-            editTodo(id, li);
-        });
-        li.appendChild(editButton);
-
-
+        // Reset the list item to its original state
+        li.innerHTML = `${currentTitle} - ${currentDescription}`;
+        // Re-add the checkbox
+        addCheckbox({ completed: false }, li); // Adjust this based on your logic
+        // Add back the edit and delete buttons
+        addEditAndDeleteButtons(id, li);
     });
 }
 
-// Call submitEditTodo on form submission
-document.getElementById('edit-todo-form').addEventListener('submit', function (e) {
-    e.preventDefault(); // Prevent default form submission
-    submitEditTodo();   // Call the function to submit the edit form
-});
+function addCheckbox(todo, li) {
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = todo.completed; // Use the completed status from the todo object
+    checkbox.addEventListener('change', function () {
+        toggleTodoCompletion(todo.id, checkbox.checked, li);
+    });
+    li.prepend(checkbox); // Add checkbox at the start
+}
+
+function addEditAndDeleteButtons(id, li) {
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Edit';
+    editButton.addEventListener('click', function () {
+        editTodo(id, li);
+    });
+    li.appendChild(editButton);
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.addEventListener('click', function () {
+        deleteTodo(id, li);
+    });
+    li.appendChild(deleteButton);
+}
+
+/////
+
 
 // Function to delete todo
 function deleteTodo(id, li) {
