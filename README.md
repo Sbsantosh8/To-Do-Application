@@ -21,7 +21,8 @@ Make sure you have the following installed on your machine:<br/>
 
 # 1. Clone the Repository <br/>
 ```bash
-git clone https://github.com/Sbsantosh8/To-Do-Application.git.
+git clone https://github.com/Sbsantosh8/To-Do-Application.git
+
 cd To-Do-Application
 
 ```
