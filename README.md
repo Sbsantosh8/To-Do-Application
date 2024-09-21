@@ -56,7 +56,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-## Your API will be available at http://127.0.0.1:8000/api/.
+## Your API will be available at http://127.0.0.1:8000/api/todos/
 
 ## API Endpoints
 GET /api/todos/ - Retrieve a list of to-do items <br/>
