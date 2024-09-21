@@ -30,7 +30,8 @@ cd To-Do-Application
 # 2. Create and Activate Virtual Environment
 ``` bash
 python -m venv myenv
- On Windows use `myenv\Scripts\activate.ps1`
+On Windows use
+`myenv\Scripts\activate.ps1`
 ```
 
 # 3. Install Dependencies
